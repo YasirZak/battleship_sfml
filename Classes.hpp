@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
+#include <cmath>
 
 
 // Scalling constant for all game entities (sprites)
@@ -50,6 +51,12 @@ public:
     // Drawing pegs
     void draw_pegs(sf::RenderWindow* window);
 
+    // Within grid
+    bool is_within(sf::Vector2f position);
+
+    // Get relative position
+    std::pair<int,int> get_rel_pos(sf::Vector2f position);
+
 };
 
 class Game {
@@ -61,6 +68,10 @@ private:
     sf::RenderWindow* window;
     sf::VideoMode video_mode;
     sf::Event event;
+
+    // Mouse position
+    sf::Vector2i mouse_position_window;
+    sf::Vector2f mouse_position_view;
 
     // Game objects
     Grid player_grid;
@@ -87,6 +98,12 @@ public:
 
     // Event polling
     void poll_events();
+
+    // Update Mouse position
+    void update_mouse_position();
+
+    // Processign mouse input
+    void process_mouse_input();
 
     // Update and render the game
     void update();

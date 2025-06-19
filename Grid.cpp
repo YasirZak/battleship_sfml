@@ -104,3 +104,19 @@ void Grid::draw_pegs(sf::RenderWindow* window) {
         window->draw(rp);
     }
 }
+
+// Within grid
+bool Grid::is_within(sf::Vector2f position) {
+    return this->grid.getGlobalBounds().contains(position);
+}
+
+// Get relative position
+std::pair<int,int> Grid::get_rel_pos(sf::Vector2f position) {
+
+    sf::Vector2f grid_pos = this->grid.getPosition();
+
+    int x = std::floor((((position.x - grid_pos.x) / global_scale - 1.0f) / 11.0f) + 1.0f);
+    int y = std::floor((((position.y - grid_pos.y) / global_scale - 1.0f) / 11.0f) + 1.0f);
+
+    return std::make_pair(x,y);
+}
