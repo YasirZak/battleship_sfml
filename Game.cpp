@@ -62,19 +62,13 @@ void Game::process_mouse_input() {
         Game behaviour based on clicking position
     */
     if(this->player_grid.is_within(mouse_position_view)) {
-        std::cout << "player grid " 
-        << this->player_grid.get_rel_pos(this->mouse_position_view).first
-        << ","
-        << this->player_grid.get_rel_pos(this->mouse_position_view).second
-        << "\n";
+        std::pair<int,int> rel_mouse_pos = this->player_grid.get_rel_pos(mouse_position_view);
+        this->player_grid.place_white_peg(rel_mouse_pos.first,rel_mouse_pos.second);
     }
 
     if(this->opponent_grid.is_within(mouse_position_view)) {
-        std:: cout << "opponent grid "
-        << this->opponent_grid.get_rel_pos(this->mouse_position_view).first
-        << ","
-        << this->opponent_grid.get_rel_pos(this->mouse_position_view).second
-        << "\n";
+        std::pair<int,int> rel_mouse_pos = this->opponent_grid.get_rel_pos(mouse_position_view);
+        this->opponent_grid.place_red_peg(rel_mouse_pos.first,rel_mouse_pos.second);
     }
 }
 
