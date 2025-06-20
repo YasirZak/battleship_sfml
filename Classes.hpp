@@ -4,15 +4,15 @@
 #include <vector>
 #include <ctime>
 #include <cmath>
+#include <string>
 
 
 // Scalling constant for all game entities (sprites)
 const float global_scale = 3.0f;
 
 enum class GameState{
-    Menu,
-    Playing,
-    GameOver
+    Preparation,
+    Shooting
 };
 
 class Grid {
@@ -32,9 +32,28 @@ private:
     sf::Sprite red_peg;
     std::vector<sf::Sprite> red_pegs;
 
+    // Ships
+
+    bool orientation_vertical;
+    std::vector<sf::Sprite> ships;
+    sf::RectangleShape place_holder;
+
+    sf::Sprite carrier;
+    sf::Sprite battleship;
+    sf::Sprite cruiser;
+    sf::Sprite submarine;
+    sf::Sprite destroyer;
+
+    sf::Texture carrier_texture;
+    sf::Texture battleship_texture;
+    sf::Texture cruiser_texture;
+    sf::Texture submarine_texture;
+    sf::Texture destroyer_texture;
+
     // Initializations
     void init_variables();
     void init_pegs();
+    void init_ships();
 
 public:
     // Constructors / Destructors
@@ -48,8 +67,31 @@ public:
     void place_white_peg(int x, int y);
     void place_red_peg(int x, int y);
 
+    // Placing ships
+    void place_ship(int x, int y);
+
+    void place_carrier(int x, int y);
+    void place_battleship(int x, int y);
+    void place_cruiser(int x, int y);
+    void place_submarine(int x, int y);
+    void place_destroyer(int x, int y);
+
+    bool all_ships_placed();
+
     // Drawing pegs
     void draw_pegs(sf::RenderWindow* window);
+
+    // Update place holder
+    void update_place_holder(int x, int y);
+
+    // Draw place holder
+    void draw_place_holder(sf::RenderWindow* window);
+
+    // Drawing ships
+    void draw_ships(sf::RenderWindow* window);
+
+    // Change orientation
+    void change_orientation();
 
     // Within grid
     bool is_within(sf::Vector2f position);
@@ -76,7 +118,6 @@ private:
     // Game objects
     Grid player_grid;
     Grid opponent_grid;
-
 
     // Initializations
 

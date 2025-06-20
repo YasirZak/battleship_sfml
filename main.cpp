@@ -17,7 +17,8 @@ int main() {
 
         switch (game.state)
         {
-        case GameState::Playing:
+        case GameState::Preparation:
+        case GameState::Shooting:
             game.update();
             game.render();
             break;
