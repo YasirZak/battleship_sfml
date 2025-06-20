@@ -96,6 +96,9 @@ public:
     // Within grid
     bool is_within(sf::Vector2f position);
 
+    // ships size
+    int ships_size();
+
     // Get relative position
     std::pair<int,int> get_rel_pos(sf::Vector2f position);
 
@@ -119,10 +122,25 @@ private:
     Grid player_grid;
     Grid opponent_grid;
 
+    // Game text
+    sf::Font font;
+
+    // Status texts
+    sf::Text place_carrier_text;
+    sf::Text place_battleship_text;
+    sf::Text place_cruiser_text;
+    sf::Text place_submarine_text;
+    sf::Text place_destroyer_text;
+    sf::Text rotate_text;
+
+    sf::Text your_turn;
+    sf::Text opponent_turn;
+
     // Initializations
 
     void init_variables();
     void init_window();
+    void init_text();
 
 
 public:

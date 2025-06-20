@@ -14,6 +14,7 @@ Game::Game()
 
     this->init_variables();
     this->init_window();
+    this->init_text();
 }
 
 Game::~Game() {
@@ -36,6 +37,128 @@ void Game::init_window() {
     // initializing window
     this->window = new sf::RenderWindow(this->video_mode, "Battleship");
     this->window->setFramerateLimit(60);
+}
+
+void Game::init_text() {
+
+    // Status texts
+
+    sf::Vector2u window_size = this->window->getSize();
+
+    if(!this->font.loadFromFile("ARIAL.TTF")) {
+        std::cout << "Failed to load font\n";
+    }
+
+    this->place_carrier_text.setFont(font);
+    this->place_carrier_text.setStyle(sf::Text::Bold);
+    this->place_carrier_text.setFillColor(sf::Color::White);
+    this->place_carrier_text.setCharacterSize(24);
+    this->place_carrier_text.setString("Place your Carrier");
+
+    sf::FloatRect startBounds = this->place_carrier_text.getGlobalBounds();
+    this->place_carrier_text.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->place_carrier_text.setPosition(window_size.x /2.f,25);
+
+    this->place_battleship_text.setFont(font);
+    this->place_battleship_text.setStyle(sf::Text::Bold);
+    this->place_battleship_text.setFillColor(sf::Color::White);
+    this->place_battleship_text.setCharacterSize(24);
+    this->place_battleship_text.setString("Place your Battleship");
+
+    startBounds = this->place_battleship_text.getGlobalBounds();
+    this->place_battleship_text.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->place_battleship_text.setPosition(window_size.x /2.f,25);
+;
+    this->place_cruiser_text.setFont(font);
+    this->place_cruiser_text.setStyle(sf::Text::Bold);
+    this->place_cruiser_text.setFillColor(sf::Color::White);
+    this->place_cruiser_text.setCharacterSize(24);
+    this->place_cruiser_text.setString("Place your Cruiser");
+
+    startBounds = this->place_cruiser_text.getGlobalBounds();
+    this->place_cruiser_text.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->place_cruiser_text.setPosition(window_size.x /2.f,25);
+
+    this->place_submarine_text.setFont(font);
+    this->place_submarine_text.setStyle(sf::Text::Bold);
+    this->place_submarine_text.setFillColor(sf::Color::White);
+    this->place_submarine_text.setCharacterSize(24);
+    this->place_submarine_text.setString("Place your Submarine");
+
+    startBounds = this->place_submarine_text.getGlobalBounds();
+    this->place_submarine_text.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->place_submarine_text.setPosition(window_size.x /2.f,25);
+
+    this->place_destroyer_text.setFont(font);
+    this->place_destroyer_text.setStyle(sf::Text::Bold);
+    this->place_destroyer_text.setFillColor(sf::Color::White);
+    this->place_destroyer_text.setCharacterSize(24);
+    this->place_destroyer_text.setString("Place your Destroyer");
+
+    startBounds = this->place_destroyer_text.getGlobalBounds();
+    this->place_destroyer_text.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->place_destroyer_text.setPosition(window_size.x /2.f,25);
+
+    this->rotate_text.setFont(font);
+    this->rotate_text.setFillColor(sf::Color::White);
+    this->rotate_text.setCharacterSize(18);
+    this->rotate_text.setString("Press R to rotate");
+
+    startBounds = this->rotate_text.getGlobalBounds();
+    this->rotate_text.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->rotate_text.setPosition(window_size.x /2.f,50);
+
+    this->your_turn.setFont(font);
+    this->your_turn.setStyle(sf::Text::Bold);
+    this->your_turn.setFillColor(sf::Color::White);
+    this->your_turn.setCharacterSize(24);
+    this->your_turn.setString("Your turn");
+
+    startBounds = this->your_turn.getGlobalBounds();
+    this->your_turn.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->your_turn.setPosition(window_size.x /2.f,25);
+
+    this->opponent_turn.setFont(font);
+    this->opponent_turn.setStyle(sf::Text::Bold);
+    this->opponent_turn.setFillColor(sf::Color::White);
+    this->opponent_turn.setCharacterSize(24);
+    this->opponent_turn.setString("Your turn");
+
+    startBounds = this->opponent_turn.getGlobalBounds();
+    this->opponent_turn.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->opponent_turn.setPosition(window_size.x /2.f,25);
 }
 
 
@@ -155,6 +278,39 @@ void Game::render() {
     this->window->clear();
 
     // Draw elements here
+
+    // Text
+    switch (this->player_grid.ships_size())
+    {
+    case 0:
+        this->window->draw(place_carrier_text);
+        this->window->draw(rotate_text);
+        break;
+
+    case 1:
+        this->window->draw(place_battleship_text);
+        this->window->draw(rotate_text);
+        break;
+
+    case 2:
+        this->window->draw(place_cruiser_text);
+        this->window->draw(rotate_text);
+        break;
+
+    case  3:
+        this->window->draw(place_submarine_text);
+        this->window->draw(rotate_text);
+        break;
+
+    case 4:
+        this->window->draw(place_destroyer_text);
+        this->window->draw(rotate_text);
+        break;
+    
+    default:
+        this->window->draw(your_turn);
+        break;
+    }
 
     // Grid
     this->player_grid.draw_grid(this->window);

@@ -440,3 +440,8 @@ std::pair<int,int> Grid::get_rel_pos(sf::Vector2f position) {
 
     return std::make_pair(x,y);
 }
+
+// ships size
+int Grid::ships_size() {
+    return this->ships.size();
+}
