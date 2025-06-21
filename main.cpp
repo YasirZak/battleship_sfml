@@ -8,6 +8,9 @@
 
 int main() {
 
+    // Init srand
+    std::srand(static_cast<unsigned>(time(NULL)));
+
     // Game loop
     Game game;
 

@@ -50,6 +50,14 @@ private:
     sf::Texture submarine_texture;
     sf::Texture destroyer_texture;
 
+    // Grid logic
+    std::vector<std::vector<bool>> peg_check;
+    int carrier_life;
+    int battleship_life;
+    int cruiser_life;
+    int submarine_life;
+    int destroyer_life;
+
     // Initializations
     void init_variables();
     void init_pegs();
@@ -67,8 +75,11 @@ public:
     void place_white_peg(int x, int y);
     void place_red_peg(int x, int y);
 
+    void shoot(sf::Vector2f mouse_position_view);
+
     // Placing ships
     void place_ship(int x, int y);
+    void auto_place_ship();
 
     void place_carrier(int x, int y);
     void place_battleship(int x, int y);
@@ -76,6 +87,8 @@ public:
     void place_submarine(int x, int y);
     void place_destroyer(int x, int y);
 
+    int intersets_ships(sf::Sprite ship);
+    int contains_ship(sf::Vector2f mouse_pos_view);
     bool all_ships_placed();
 
     // Drawing pegs

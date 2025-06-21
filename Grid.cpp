@@ -50,6 +50,9 @@ void Grid::init_pegs() {
 
    this->red_peg.setTexture(this->red_peg_texture);
    this->red_peg.setScale(global_scale,global_scale);
+
+   // Initializing peg checker grid
+   peg_check.assign(10, std::vector<bool>(10, false));
 }
 
 void Grid::init_ships() {
@@ -140,6 +143,13 @@ void Grid::init_ships() {
         destroyer_bounds.top + 5
     );
 
+    // Initializing health
+    this->carrier_life = 5;
+    this->battleship_life = 4;
+    this->cruiser_life = 3;
+    this->submarine_life = 3;
+    this->destroyer_life = 2;
+
 }
 
 // Public functions
@@ -183,6 +193,63 @@ void Grid::place_red_peg(int x, int y) {
     this->red_pegs.push_back(this->red_peg);
 }
 
+void Grid::shoot(sf::Vector2f mouse_position_view) {
+
+    std::pair<int,int> rel_pos = this->get_rel_pos(mouse_position_view);
+    int x = rel_pos.first;
+    int y = rel_pos.second;
+    if(this->peg_check[x-1][y-1]) {
+        return;
+    }
+
+    int ship_tag = this->contains_ship(mouse_position_view);
+
+    switch (ship_tag)
+    {
+    case -1:
+        this->place_white_peg(x,y);
+        peg_check[x-1][y-1] = true;
+        break;
+
+    case 0:
+        this->place_red_peg(x,y);
+        this->carrier_life -= 1;
+        peg_check[x-1][y-1] = true;
+        break;
+
+    case 1:
+        this->place_red_peg(x,y);
+        this->battleship_life -= 1;
+        peg_check[x-1][y-1] = true;
+        break;
+
+    case 2:
+        this->place_red_peg(x,y);
+        this->cruiser_life -= 1;
+        peg_check[x-1][y-1] = true;
+        break;
+
+    case 3:
+        this->place_red_peg(x,y);
+        this->submarine_life -= 1;
+        peg_check[x-1][y-1] = true;
+        break;
+
+    case 4:
+        this->place_red_peg(x,y);
+        this->destroyer_life -= 1;
+        peg_check[x-1][y-1] = true;
+        break;
+    
+    default:
+        break;
+    }
+
+    std::cout << this->carrier_life << this->battleship_life
+    << this->cruiser_life << this->submarine_life << this->destroyer_life 
+    << "\n";
+}
+
 // Place ships
 void Grid::place_ship(int x, int y) {
     switch (this->ships.size())
@@ -207,19 +274,33 @@ void Grid::place_ship(int x, int y) {
     }
 }
 
+void Grid::auto_place_ship() {
+
+    while(this->ships.size() < 5) {
+        if (rand() % 2 == 1) {
+            this->change_orientation();
+        }
+        x = rand() % 11;
+        y = rand() % 11;
+        this->place_ship(x,y);
+    }
+}
+
 void Grid::place_carrier(int x, int y) {
 
+    if(x < 1 || y < 1) {
+        return;
+    }
+
     if(this->orientation_vertical) {
-        if(y+4>10) {
+        if(y+4>10 || x > 10) {
             return;
         }
     } else {
-        if(x+4>10) {
+        if(x+4>10 || y > 10) {
             return;
         }
     }
-
-    std::cout << "carrier placed position: " << x << "," << y << "\n";
 
     this->carrier.setPosition
     (
@@ -229,22 +310,30 @@ void Grid::place_carrier(int x, int y) {
         )
     );
 
+    if(this->intersets_ships(this->carrier) >= 0) {
+        return;
+    }
+
+    std::cout << "carrier placed position: " << x << "," << y << "\n";
+
     this->ships.push_back(this->carrier);
 }
 
 void Grid::place_battleship(int x, int y) {
 
+    if(x < 1 || y < 1) {
+        return;
+    }
+
     if(this->orientation_vertical) {
-        if(y+3>10) {
+        if(y+3>10 || x > 10) {
             return;
         }
     } else {
-        if(x+3>10) {
+        if(x+3>10 || y > 10) {
             return;
         }
     }
-
-    std::cout << "battleship placed position: " << x << "," << y << "\n";
 
     this->battleship.setPosition
     (
@@ -254,22 +343,30 @@ void Grid::place_battleship(int x, int y) {
         )
     );
 
+    if(this->intersets_ships(this->battleship) >= 0) {
+        return;
+    }
+
+    std::cout << "battleship placed position: " << x << "," << y << "\n";
+
     this->ships.push_back(this->battleship);
 }
 
 void Grid::place_cruiser(int x, int y) {
 
+    if(x < 1 || y < 1) {
+        return;
+    }
+
     if(this->orientation_vertical) {
-        if(y+2>10) {
+        if(y+2>10 || x > 10) {
             return;
         }
     } else {
-        if(x+2>10) {
+        if(x+2>10 || y > 10) {
             return;
         }
     }
-
-    std::cout << "cruiser placed position: " << x << "," << y << "\n";
 
     this->cruiser.setPosition
     (
@@ -279,22 +376,30 @@ void Grid::place_cruiser(int x, int y) {
         )
     );
 
+    if(this->intersets_ships(this->cruiser) >= 0) {
+        return;
+    }
+
+    std::cout << "cruiser placed position: " << x << "," << y << "\n";
+
     this->ships.push_back(this->cruiser);
 }
 
 void Grid::place_submarine(int x, int y) {
 
+    if(x < 1 || y < 1) {
+        return;
+    }
+
     if(this->orientation_vertical) {
-        if(y+2>10) {
+        if(y+2>10 || x > 10) {
             return;
         }
     } else {
-        if(x+2>10) {
+        if(x+2>10 || y > 10) {
             return;
         }
     }
-
-    std::cout << "submarine placed position: " << x << "," << y << "\n";
 
     this->submarine.setPosition
     (
@@ -304,22 +409,30 @@ void Grid::place_submarine(int x, int y) {
         )
     );
 
+    if(this->intersets_ships(this->submarine) >= 0) {
+        return;
+    }
+
+    std::cout << "submarine placed position: " << x << "," << y << "\n";
+
     this->ships.push_back(this->submarine);
 }
 
 void Grid::place_destroyer(int x, int y) {
 
+    if(x < 1 || y < 1) {
+        return;
+    }
+
     if(this->orientation_vertical) {
-        if(y+1>10) {
+        if(y+1>10 || x > 10) {
             return;
         }
     } else {
-        if(x+1>10) {
+        if(x+1>10 || y > 10) {
             return;
         }
     }
-
-    std::cout << "destroyer placed position: " << x << "," << y << "\n";
 
     this->destroyer.setPosition
     (
@@ -329,11 +442,43 @@ void Grid::place_destroyer(int x, int y) {
         )
     );
 
+    if(this->intersets_ships(this->destroyer) >= 0) {
+        return;
+    }
+
+    std::cout << "destroyer placed position: " << x << "," << y << "\n";
+
     this->ships.push_back(this->destroyer);
 }
 
 bool Grid::all_ships_placed() {
     return this->ships.size() >= 5;
+}
+
+int Grid::intersets_ships(sf::Sprite ship) {
+
+    for(int i = 0; i < this->ships.size(); i++) {
+        if(ships[i].getGlobalBounds().intersects(ship.getGlobalBounds())) {
+            std::cout << "Intersect " << i << "\n";
+            return i;
+        }
+    }
+
+    return -1;
+    
+}
+
+int Grid::contains_ship(sf::Vector2f mouse_pos_view) {
+
+    for(int i = 0; i < this->ships.size(); i++) {
+        if(this->ships[i].getGlobalBounds().contains(mouse_pos_view)) {
+            std::cout << "Intersect " << i << "\n";
+            return i;
+        }
+    }
+
+    return -1;
+    
 }
 
 // Drawing all pegs

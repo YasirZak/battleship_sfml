@@ -15,6 +15,9 @@ Game::Game()
     this->init_variables();
     this->init_window();
     this->init_text();
+
+    // Automatically place carriers for opponent
+    this->opponent_grid.auto_place_ship();
 }
 
 Game::~Game() {
@@ -205,14 +208,9 @@ void Game::process_mouse_input() {
    
     // Second shooting stage
    case GameState::Shooting:
-        if(this->player_grid.is_within(mouse_position_view)) {
-            std::pair<int,int> rel_mouse_pos = this->player_grid.get_rel_pos(mouse_position_view);
-            this->player_grid.place_white_peg(rel_mouse_pos.first,rel_mouse_pos.second);
-        }
-
+      
         if(this->opponent_grid.is_within(mouse_position_view)) {
-            std::pair<int,int> rel_mouse_pos = this->opponent_grid.get_rel_pos(mouse_position_view);
-            this->opponent_grid.place_red_peg(rel_mouse_pos.first,rel_mouse_pos.second);
+            this->opponent_grid.shoot(this->mouse_position_view);
         }
         break;
    }
@@ -322,6 +320,7 @@ void Game::render() {
 
     // Ships
     this->player_grid.draw_ships(this->window);
+    this->opponent_grid.draw_ships(this->window);
 
     // Pegs
     this->player_grid.draw_pegs(this->window);
