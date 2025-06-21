@@ -29,6 +29,7 @@ Game::~Game() {
 void Game::init_variables() {
     this->window = nullptr;
     this->state = GameState::Preparation;
+    this->player_turn = true;
 }
 
 void Game::init_window() {
@@ -139,7 +140,7 @@ void Game::init_text() {
     this->your_turn.setStyle(sf::Text::Bold);
     this->your_turn.setFillColor(sf::Color::White);
     this->your_turn.setCharacterSize(24);
-    this->your_turn.setString("Your turn");
+    this->your_turn.setString("Shoot!");
 
     startBounds = this->your_turn.getGlobalBounds();
     this->your_turn.setOrigin(      // setting origin of text to center of text
@@ -153,7 +154,7 @@ void Game::init_text() {
     this->opponent_turn.setStyle(sf::Text::Bold);
     this->opponent_turn.setFillColor(sf::Color::White);
     this->opponent_turn.setCharacterSize(24);
-    this->opponent_turn.setString("Your turn");
+    this->opponent_turn.setString("Opponent is thinking");
 
     startBounds = this->opponent_turn.getGlobalBounds();
     this->opponent_turn.setOrigin(      // setting origin of text to center of text
@@ -208,9 +209,10 @@ void Game::process_mouse_input() {
    
     // Second shooting stage
    case GameState::Shooting:
-      
         if(this->opponent_grid.is_within(mouse_position_view)) {
-            this->opponent_grid.shoot(this->mouse_position_view);
+            if(this->opponent_grid.shoot(this->mouse_position_view)) {
+                this->player_grid.noob_opponent_shoot();
+            };
         }
         break;
    }
@@ -320,7 +322,7 @@ void Game::render() {
 
     // Ships
     this->player_grid.draw_ships(this->window);
-    this->opponent_grid.draw_ships(this->window);
+    // this->opponent_grid.draw_ships(this->window);
 
     // Pegs
     this->player_grid.draw_pegs(this->window);

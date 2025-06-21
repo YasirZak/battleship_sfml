@@ -52,7 +52,7 @@ void Grid::init_pegs() {
    this->red_peg.setScale(global_scale,global_scale);
 
    // Initializing peg checker grid
-   peg_check.assign(10, std::vector<bool>(10, false));
+   peg_check.assign(10, std::vector<int>(10, 0));
 }
 
 void Grid::init_ships() {
@@ -193,13 +193,14 @@ void Grid::place_red_peg(int x, int y) {
     this->red_pegs.push_back(this->red_peg);
 }
 
-void Grid::shoot(sf::Vector2f mouse_position_view) {
+bool Grid::shoot(sf::Vector2f mouse_position_view) {
 
     std::pair<int,int> rel_pos = this->get_rel_pos(mouse_position_view);
     int x = rel_pos.first;
     int y = rel_pos.second;
-    if(this->peg_check[x-1][y-1]) {
-        return;
+
+    if(x < 0 || x >= 10 || y < 0 || y >= 10 || this->peg_check[x-1][y-1] != 0) {
+        return false;
     }
 
     int ship_tag = this->contains_ship(mouse_position_view);
@@ -208,37 +209,37 @@ void Grid::shoot(sf::Vector2f mouse_position_view) {
     {
     case -1:
         this->place_white_peg(x,y);
-        peg_check[x-1][y-1] = true;
+        peg_check[x-1][y-1] = 1;
         break;
 
     case 0:
         this->place_red_peg(x,y);
         this->carrier_life -= 1;
-        peg_check[x-1][y-1] = true;
+        peg_check[x-1][y-1] = 2;
         break;
 
     case 1:
         this->place_red_peg(x,y);
         this->battleship_life -= 1;
-        peg_check[x-1][y-1] = true;
+        peg_check[x-1][y-1] = 2;
         break;
 
     case 2:
         this->place_red_peg(x,y);
         this->cruiser_life -= 1;
-        peg_check[x-1][y-1] = true;
+        peg_check[x-1][y-1] = 2;
         break;
 
     case 3:
         this->place_red_peg(x,y);
         this->submarine_life -= 1;
-        peg_check[x-1][y-1] = true;
+        peg_check[x-1][y-1] = 2;
         break;
 
     case 4:
         this->place_red_peg(x,y);
         this->destroyer_life -= 1;
-        peg_check[x-1][y-1] = true;
+        peg_check[x-1][y-1] = 2;
         break;
     
     default:
@@ -248,6 +249,24 @@ void Grid::shoot(sf::Vector2f mouse_position_view) {
     std::cout << this->carrier_life << this->battleship_life
     << this->cruiser_life << this->submarine_life << this->destroyer_life 
     << "\n";
+
+    return true;
+}
+
+void Grid::noob_opponent_shoot() {
+
+    x = rand() % 10;
+    y = rand() % 10;
+
+    if(!this->shoot(
+        this->grid.getPosition() + sf::Vector2f(
+            (11.0f * (x+1) + 1.0f + 5.0f) * global_scale, 
+            (11.0f * (y+1) + 1.0f + 5.0f) * global_scale
+        ))) 
+            
+    {
+        this->noob_opponent_shoot();
+    }
 }
 
 // Place ships

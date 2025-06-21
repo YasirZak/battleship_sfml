@@ -12,7 +12,9 @@ const float global_scale = 3.0f;
 
 enum class GameState{
     Preparation,
-    Shooting
+    Shooting,
+    Win,
+    Loose
 };
 
 class Grid {
@@ -51,7 +53,7 @@ private:
     sf::Texture destroyer_texture;
 
     // Grid logic
-    std::vector<std::vector<bool>> peg_check;
+    std::vector<std::vector<int>> peg_check;
     int carrier_life;
     int battleship_life;
     int cruiser_life;
@@ -75,7 +77,8 @@ public:
     void place_white_peg(int x, int y);
     void place_red_peg(int x, int y);
 
-    void shoot(sf::Vector2f mouse_position_view);
+    bool shoot(sf::Vector2f mouse_position_view);
+    void noob_opponent_shoot();
 
     // Placing ships
     void place_ship(int x, int y);
@@ -160,6 +163,7 @@ public:
 
     // Game state variable
     GameState state;
+    bool player_turn;
 
     // Constructor / Destructor
     Game();
