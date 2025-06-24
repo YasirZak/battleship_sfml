@@ -36,7 +36,7 @@ void Game::init_window() {
 
     // Setting window dimensions
     this->video_mode.height = 252*3 + 50; // Scaled 3x
-    this->video_mode.width = 121*3;
+    this->video_mode.width = 121*3 + 100;
 
     // initializing window
     this->window = new sf::RenderWindow(this->video_mode, "Battleship");
@@ -163,6 +163,47 @@ void Game::init_text() {
     );
 
     this->opponent_turn.setPosition(window_size.x /2.f,25);
+
+    // Game win and loose;
+    this->you_win.setFont(font);
+    this->you_win.setStyle(sf::Text::Bold);
+    this->you_win.setFillColor(sf::Color::Green);
+    this->you_win.setCharacterSize(24);
+    this->you_win.setString("You Win");
+
+    startBounds = this->you_win.getGlobalBounds();
+    this->you_win.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->you_win.setPosition(window_size.x /2.f,25);
+
+    this->you_loose.setFont(font);
+    this->you_loose.setStyle(sf::Text::Bold);
+    this->you_loose.setFillColor(sf::Color::Red);
+    this->you_loose.setCharacterSize(24);
+    this->you_loose.setString("You loose");
+
+    startBounds = this->you_loose.getGlobalBounds();
+    this->you_loose.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->you_loose.setPosition(window_size.x /2.f,25);
+
+    // player and opponent board status
+
+    this->player_board_status.setFont(font);
+    this->player_board_status.setCharacterSize(18);
+    this->player_board_status.setFillColor(sf::Color::White);
+    this->player_board_status.setPosition((5.0f + 111.0f + 5.0f) * global_scale,131.0f*global_scale + 50);
+
+    this->opponent_board_status.setFont(font);
+    this->opponent_board_status.setCharacterSize(18);
+    this->opponent_board_status.setFillColor(sf::Color::White);
+    this->opponent_board_status.setPosition((5.0f + 111.0f + 5.0f) * global_scale,10.0f * global_scale + 50);
 }
 
 
@@ -211,7 +252,12 @@ void Game::process_mouse_input() {
    case GameState::Shooting:
         if(this->opponent_grid.is_within(mouse_position_view)) {
             if(this->opponent_grid.shoot(this->mouse_position_view)) {
-                this->player_grid.noob_opponent_shoot();
+                this->update_opponent_board_status(this->opponent_grid.status_text_gen(mouse_position_view));
+                if(this->opponent_grid.is_lost()) {
+                    this->state = GameState::Win;
+                }
+                this->player_turn = false;
+                // this->player_grid.noob_opponent_shoot();
             };
         }
         break;
@@ -252,6 +298,48 @@ void Game::poll_events() {
     
 }
 
+// Status text update
+
+void Game::update_player_board_status(std::string status_string) {
+
+    if(this->player_board_status_list.size() > 10) {
+        this->player_board_status_list.erase(this->player_board_status_list.begin());
+    }
+
+    for (auto &s : this->player_board_status_list) {
+        s.move(0.0f,25.0f);
+    }
+
+    this->player_board_status.setString(status_string);
+    this->player_board_status_list.push_back(this->player_board_status);
+}
+
+void Game::update_opponent_board_status(std::string status_string) {
+
+    if(this->opponent_board_status_list.size() > 10) {
+        this->opponent_board_status_list.erase(this->opponent_board_status_list.begin());
+    }
+
+    for (auto &s : this->opponent_board_status_list) {
+        s.move(0.0f,25.0f);
+    }
+
+    this->opponent_board_status.setString(status_string);
+    this->opponent_board_status_list.push_back(this->opponent_board_status);
+}
+
+void Game::render_opponent_board_status() {
+    for (auto &os : opponent_board_status_list) {
+        this->window->draw(os);
+    }
+}
+
+void Game::render_player_board_status() {
+    for (auto &ps : this->player_board_status_list) {
+        this->window->draw(ps);
+    }
+}
+
 // Update and Render
 
 void Game::update() {
@@ -264,6 +352,20 @@ void Game::update() {
                 // Getting relative position
                 std::pair<int,int> rel_mouse_pos = this->player_grid.get_rel_pos(mouse_position_view);
                 this->player_grid.update_place_holder(rel_mouse_pos.first,rel_mouse_pos.second);
+        }
+    }
+
+    if(this->state == GameState::Shooting) {
+        if(!this->player_turn) {
+            std::pair<int,int> pos = this->player_grid.noob_opponent_shoot();
+            this->update_player_board_status(
+                this->player_grid.status_text_gen(this->player_grid.get_abs_pos(pos.first, pos.second))
+            );
+
+            if(this->player_grid.is_lost()) {
+                    this->state = GameState::Loose;
+                }
+            this->player_turn = true;
         }
     }
     
@@ -283,34 +385,54 @@ void Game::render() {
     switch (this->player_grid.ships_size())
     {
     case 0:
-        this->window->draw(place_carrier_text);
-        this->window->draw(rotate_text);
+        this->window->draw(this->place_carrier_text);
+        this->window->draw(this->rotate_text);
         break;
 
     case 1:
-        this->window->draw(place_battleship_text);
-        this->window->draw(rotate_text);
+        this->window->draw(this->place_battleship_text);
+        this->window->draw(this->rotate_text);
         break;
 
     case 2:
-        this->window->draw(place_cruiser_text);
-        this->window->draw(rotate_text);
+        this->window->draw(this->place_cruiser_text);
+        this->window->draw(this->rotate_text);
         break;
 
     case  3:
-        this->window->draw(place_submarine_text);
-        this->window->draw(rotate_text);
+        this->window->draw(this->place_submarine_text);
+        this->window->draw(this->rotate_text);
         break;
 
     case 4:
-        this->window->draw(place_destroyer_text);
-        this->window->draw(rotate_text);
+        this->window->draw(this->place_destroyer_text);
+        this->window->draw(this->rotate_text);
         break;
     
     default:
-        this->window->draw(your_turn);
+        switch (this->state)
+        {
+        case GameState::Shooting:
+            if(this->player_turn)
+            this->window->draw(this->your_turn);
+            else
+            this->window->draw(this->opponent_turn);
+            break;
+        
+        case GameState::Win:
+            this->window->draw(this->you_win);
+            break;
+        case GameState::Loose:
+            this->window->draw(you_loose);
+            break;
+        }
+        
         break;
     }
+
+    // Status text
+    this->render_opponent_board_status();
+    this->render_player_board_status();
 
     // Grid
     this->player_grid.draw_grid(this->window);
@@ -322,7 +444,7 @@ void Game::render() {
 
     // Ships
     this->player_grid.draw_ships(this->window);
-    // this->opponent_grid.draw_ships(this->window);
+    this->opponent_grid.draw_ships(this->window);
 
     // Pegs
     this->player_grid.draw_pegs(this->window);

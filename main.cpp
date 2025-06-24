@@ -22,6 +22,9 @@ int main() {
         {
         case GameState::Preparation:
         case GameState::Shooting:
+        case GameState::Win:
+        case GameState::Loose:
+            game.render();
             game.update();
             game.render();
             break;

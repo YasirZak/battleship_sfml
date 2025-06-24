@@ -78,7 +78,7 @@ public:
     void place_red_peg(int x, int y);
 
     bool shoot(sf::Vector2f mouse_position_view);
-    void noob_opponent_shoot();
+    std::pair<int,int> noob_opponent_shoot();
 
     // Placing ships
     void place_ship(int x, int y);
@@ -117,6 +117,12 @@ public:
 
     // Get relative position
     std::pair<int,int> get_rel_pos(sf::Vector2f position);
+    sf::Vector2f get_abs_pos(int x, int y);
+
+    // function to see if we lost
+    bool is_lost();
+
+    std::string status_text_gen(sf::Vector2f position);
 
 };
 
@@ -152,6 +158,15 @@ private:
     sf::Text your_turn;
     sf::Text opponent_turn;
 
+    sf::Text you_win;
+    sf::Text you_loose;
+
+    sf::Text player_board_status;
+    sf::Text opponent_board_status;
+
+    std::vector<sf::Text> player_board_status_list;
+    std::vector<sf::Text> opponent_board_status_list;
+
     // Initializations
 
     void init_variables();
@@ -180,6 +195,13 @@ public:
 
     // Processign mouse input
     void process_mouse_input();
+
+    // Status text update
+    void update_player_board_status(std::string status_string);
+    void update_opponent_board_status(std::string status_string);
+
+    void render_opponent_board_status();
+    void render_player_board_status();
 
     // Update and render the game
     void update();

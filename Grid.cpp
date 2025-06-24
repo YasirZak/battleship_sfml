@@ -78,11 +78,11 @@ void Grid::init_ships() {
     }
 
     this->carrier.setTexture(this->carrier_texture);
-    this->carrier.setScale(global_scale,global_scale);
+    this->carrier.setScale(2.893f,global_scale);
 
     sf::FloatRect carrier_bounds = this->carrier.getGlobalBounds();
     this->carrier.setOrigin(
-        carrier_bounds.left + 6,
+        carrier_bounds.left + 5,
         carrier_bounds.top + 5
     );
 
@@ -92,11 +92,11 @@ void Grid::init_ships() {
     }
 
     this->battleship.setTexture(this->battleship_texture);
-    this->battleship.setScale(global_scale,global_scale);
+    this->battleship.setScale(2.867f,global_scale);
 
     sf::FloatRect battleship_bounds = this->battleship.getGlobalBounds();
     this->battleship.setOrigin(
-        battleship_bounds.left + 6,
+        battleship_bounds.left + 5,
         battleship_bounds.top + 5
     );
 
@@ -106,11 +106,11 @@ void Grid::init_ships() {
     }
 
     this->cruiser.setTexture(this->cruiser_texture);
-    this->cruiser.setScale(global_scale,global_scale);
+    this->cruiser.setScale(2.824f,global_scale);
 
     sf::FloatRect cruiser_bounds = this->cruiser.getGlobalBounds();
     this->cruiser.setOrigin(
-        cruiser_bounds.left + 6,
+        cruiser_bounds.left + 5,
         cruiser_bounds.top + 5
     );
 
@@ -121,11 +121,11 @@ void Grid::init_ships() {
     }
 
     this->submarine.setTexture(this->submarine_texture);
-    this->submarine.setScale(global_scale,global_scale);
+    this->submarine.setScale(2.824f,global_scale);
 
     sf::FloatRect submarine_bounds = this->submarine.getGlobalBounds();
     this->submarine.setOrigin(
-        submarine_bounds.left + 6,
+        submarine_bounds.left + 5,
         submarine_bounds.top + 5
     );
 
@@ -135,11 +135,11 @@ void Grid::init_ships() {
     }
 
     this->destroyer.setTexture(this->destroyer_texture);
-    this->destroyer.setScale(global_scale,global_scale);
+    this->destroyer.setScale(2.739f,global_scale);
 
     sf::FloatRect destroyer_bounds = this->destroyer.getGlobalBounds();
     this->destroyer.setOrigin(
-        destroyer_bounds.left + 6,
+        destroyer_bounds.left + 5,
         destroyer_bounds.top + 5
     );
 
@@ -199,7 +199,7 @@ bool Grid::shoot(sf::Vector2f mouse_position_view) {
     int x = rel_pos.first;
     int y = rel_pos.second;
 
-    if(x < 0 || x >= 10 || y < 0 || y >= 10 || this->peg_check[x-1][y-1] != 0) {
+    if(x < 1 || x > 10 || y < 1 || y > 10 || this->peg_check[x-1][y-1] != 0) {
         return false;
     }
 
@@ -246,14 +246,12 @@ bool Grid::shoot(sf::Vector2f mouse_position_view) {
         break;
     }
 
-    std::cout << this->carrier_life << this->battleship_life
-    << this->cruiser_life << this->submarine_life << this->destroyer_life 
-    << "\n";
+    // std::cout << this->status_text_gen(mouse_position_view) << "\n";
 
     return true;
 }
 
-void Grid::noob_opponent_shoot() {
+std::pair<int,int> Grid::noob_opponent_shoot() {
 
     x = rand() % 10;
     y = rand() % 10;
@@ -265,7 +263,12 @@ void Grid::noob_opponent_shoot() {
         ))) 
             
     {
-        this->noob_opponent_shoot();
+        return this->noob_opponent_shoot();
+    } else {
+        std::pair<int,int> pos;
+        pos.first = x;
+        pos.second = y;
+        return pos;
     }
 }
 
@@ -478,7 +481,7 @@ int Grid::intersets_ships(sf::Sprite ship) {
 
     for(int i = 0; i < this->ships.size(); i++) {
         if(ships[i].getGlobalBounds().intersects(ship.getGlobalBounds())) {
-            std::cout << "Intersect " << i << "\n";
+            // std::cout << "Intersect " << i << "\n";
             return i;
         }
     }
@@ -491,7 +494,7 @@ int Grid::contains_ship(sf::Vector2f mouse_pos_view) {
 
     for(int i = 0; i < this->ships.size(); i++) {
         if(this->ships[i].getGlobalBounds().contains(mouse_pos_view)) {
-            std::cout << "Intersect " << i << "\n";
+            // std::cout << "Contains " << i << "\n";
             return i;
         }
     }
@@ -605,7 +608,93 @@ std::pair<int,int> Grid::get_rel_pos(sf::Vector2f position) {
     return std::make_pair(x,y);
 }
 
+// Get absolute position
+
+sf::Vector2f Grid::get_abs_pos(int x, int y) {
+    return this->grid.getPosition() + sf::Vector2f(
+            (11.0f * (x+1) + 1.0f + 5.0f) * global_scale, 
+            (11.0f * (y+1) + 1.0f + 5.0f) * global_scale
+        );
+}
+
 // ships size
 int Grid::ships_size() {
     return this->ships.size();
+}
+
+// function to see if we lost
+
+bool Grid::is_lost() {
+    if(this->carrier_life + this->battleship_life 
+        + this->cruiser_life + this->submarine_life
+    + this->destroyer_life == 0) {
+        return true;
+    }
+
+    return false;
+}
+
+// function to generate status text of shot
+
+std::string Grid::status_text_gen(sf::Vector2f position) {
+    std::pair<int,int> rel_pos = this->get_rel_pos(position);
+    int ship_no = this->contains_ship(position);
+
+    std::string ship;
+    std::string other;
+    switch (ship_no)
+    {
+    case 0:
+        ship = " Car";
+        if(this->carrier_life != 0)
+            other = " Hit";
+        else
+            other = " Sank";
+        break;
+
+    case 1:
+        ship = " Bat";
+        if(this->battleship_life != 0)
+            other = " Hit";
+        else
+            other = " Sank";
+        break;
+
+    case 2:
+        ship = " Cru";
+        if(this->cruiser_life != 0)
+            other = " Hit";
+        else
+            other = " Sank";
+        break;
+
+    case 3:
+        ship = " Sub";
+        if(this->submarine_life != 0)
+            other = " Hit";
+        else
+            other = " Sank";
+        break;
+
+    case 4:
+        ship = " Des";
+        if(this->destroyer_life != 0)
+            other = " Hit";
+        else
+            other = " Sank";
+        break;
+    
+    default:
+        ship = "";
+        other = " Miss";
+        break;
+    }
+
+    char fst = 'A'+(rel_pos.second-1);
+
+    std::string final_string = std::string() + fst + "-" + (std::to_string(rel_pos.first))
+    + ship + other;
+
+    return final_string;
+
 }
