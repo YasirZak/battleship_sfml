@@ -258,8 +258,8 @@ std::pair<int,int> Grid::noob_opponent_shoot() {
 
     if(!this->shoot(
         this->grid.getPosition() + sf::Vector2f(
-            (11.0f * (x+1) + 1.0f + 5.0f) * global_scale, 
-            (11.0f * (y+1) + 1.0f + 5.0f) * global_scale
+            (11.0f * (x) + 1.0f + 5.0f) * global_scale, 
+            (11.0f * (y) + 1.0f + 5.0f) * global_scale
         ))) 
             
     {
