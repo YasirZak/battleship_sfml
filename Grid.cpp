@@ -78,7 +78,7 @@ void Grid::init_ships() {
     }
 
     this->carrier.setTexture(this->carrier_texture);
-    this->carrier.setScale(2.893f,global_scale);
+    this->carrier.setScale(global_scale,global_scale);
 
     sf::FloatRect carrier_bounds = this->carrier.getGlobalBounds();
     this->carrier.setOrigin(
@@ -92,7 +92,7 @@ void Grid::init_ships() {
     }
 
     this->battleship.setTexture(this->battleship_texture);
-    this->battleship.setScale(2.867f,global_scale);
+    this->battleship.setScale(global_scale,global_scale);
 
     sf::FloatRect battleship_bounds = this->battleship.getGlobalBounds();
     this->battleship.setOrigin(
@@ -106,7 +106,7 @@ void Grid::init_ships() {
     }
 
     this->cruiser.setTexture(this->cruiser_texture);
-    this->cruiser.setScale(2.824f,global_scale);
+    this->cruiser.setScale(global_scale,global_scale);
 
     sf::FloatRect cruiser_bounds = this->cruiser.getGlobalBounds();
     this->cruiser.setOrigin(
@@ -121,7 +121,7 @@ void Grid::init_ships() {
     }
 
     this->submarine.setTexture(this->submarine_texture);
-    this->submarine.setScale(2.824f,global_scale);
+    this->submarine.setScale(global_scale,global_scale);
 
     sf::FloatRect submarine_bounds = this->submarine.getGlobalBounds();
     this->submarine.setOrigin(
@@ -135,7 +135,7 @@ void Grid::init_ships() {
     }
 
     this->destroyer.setTexture(this->destroyer_texture);
-    this->destroyer.setScale(2.739f,global_scale);
+    this->destroyer.setScale(global_scale,global_scale);
 
     sf::FloatRect destroyer_bounds = this->destroyer.getGlobalBounds();
     this->destroyer.setOrigin(

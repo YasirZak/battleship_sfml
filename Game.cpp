@@ -36,7 +36,7 @@ void Game::init_window() {
 
     // Setting window dimensions
     this->video_mode.height = 252*3 + 50; // Scaled 3x
-    this->video_mode.width = 121*3 + 100;
+    this->video_mode.width = 121*3 + 110;
 
     // initializing window
     this->window = new sf::RenderWindow(this->video_mode, "Battleship");
@@ -444,7 +444,7 @@ void Game::render() {
 
     // Ships
     this->player_grid.draw_ships(this->window);
-    this->opponent_grid.draw_ships(this->window);
+    // this->opponent_grid.draw_ships(this->window);
 
     // Pegs
     this->player_grid.draw_pegs(this->window);
