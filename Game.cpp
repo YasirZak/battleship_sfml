@@ -311,6 +311,12 @@ void Game::update_player_board_status(std::string status_string) {
     }
 
     this->player_board_status.setString(status_string);
+
+    if(status_string[8] == 'H' || status_string[8] == 'S') 
+        this->player_board_status.setFillColor(sf::Color::Red);
+    else
+        this->player_board_status.setFillColor(sf::Color::White);
+
     this->player_board_status_list.push_back(this->player_board_status);
 }
 
@@ -325,6 +331,12 @@ void Game::update_opponent_board_status(std::string status_string) {
     }
 
     this->opponent_board_status.setString(status_string);
+
+    if(status_string[8] == 'H' || status_string[8] == 'S') 
+        this->opponent_board_status.setFillColor(sf::Color::Red);
+    else
+        this->opponent_board_status.setFillColor(sf::Color::White);
+
     this->opponent_board_status_list.push_back(this->opponent_board_status);
 }
 

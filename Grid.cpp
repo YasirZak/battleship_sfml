@@ -612,8 +612,8 @@ std::pair<int,int> Grid::get_rel_pos(sf::Vector2f position) {
 
 sf::Vector2f Grid::get_abs_pos(int x, int y) {
     return this->grid.getPosition() + sf::Vector2f(
-            (11.0f * (x+1) + 1.0f + 5.0f) * global_scale, 
-            (11.0f * (y+1) + 1.0f + 5.0f) * global_scale
+            (11.0f * (x) + 1.0f + 5.0f) * global_scale, 
+            (11.0f * (y) + 1.0f + 5.0f) * global_scale
         );
 }
 
