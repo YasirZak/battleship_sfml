@@ -28,9 +28,9 @@ Game::~Game() {
 
 void Game::init_variables() {
     this->window = nullptr;
-    this->state = GameState::Preparation;
+    this->state = GameState::Select;
     this->player_turn = true;
-    this->is_pro = true;
+    this->is_pro = false;
 }
 
 void Game::init_window() {
@@ -205,6 +205,21 @@ void Game::init_text() {
     this->opponent_board_status.setCharacterSize(18);
     this->opponent_board_status.setFillColor(sf::Color::White);
     this->opponent_board_status.setPosition((5.0f + 111.0f + 5.0f) * global_scale,10.0f * global_scale + 50);
+
+    // Selection text
+    this->select_mode.setFont(font);
+    this->select_mode.setStyle(sf::Text::Bold);
+    this->select_mode.setFillColor(sf::Color::White);
+    this->select_mode.setCharacterSize(20);
+    this->select_mode.setString("Press (1) for noob bot or (2) for pro bot");
+
+    startBounds = this->select_mode.getGlobalBounds();
+    this->select_mode.setOrigin(      // setting origin of text to center of text
+        startBounds.left + startBounds.width / 2.f,
+        startBounds.top + startBounds.height / 2.f
+    );
+
+    this->select_mode.setPosition(window_size.x /2.f,window_size.y /2.f - 50);
 }
 
 
@@ -278,8 +293,10 @@ void Game::poll_events() {
             break;
         
         case sf::Event::KeyPressed:
-            if(event.key.code == sf::Keyboard::R) {
-                this->player_grid.change_orientation();
+            if(this->state == GameState::Preparation) {
+                if(event.key.code == sf::Keyboard::R) {
+                    this->player_grid.change_orientation();
+                }
             }
 
             break;
@@ -369,7 +386,24 @@ void Game::render_player_board_status() {
 
 // Selection screen
 
+void Game::update_selection_screen() {
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1)) {
+        this->is_pro = false;
+        this->state = GameState::Preparation;
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) || sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) {
+        this->is_pro = true;
+        this->state = GameState::Preparation;
+    }
+}
 
+void Game::render_selection_screen() {
+
+    this->window->clear();
+
+    this->window->draw(this->select_mode);
+
+    this->window->display();
+}
 
 // Update and Render
 

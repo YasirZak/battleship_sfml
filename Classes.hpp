@@ -192,6 +192,8 @@ private:
     std::vector<sf::Text> player_board_status_list;
     std::vector<sf::Text> opponent_board_status_list;
 
+    sf::Text select_mode;
+
     // Initializations
 
     void init_variables();
@@ -230,6 +232,8 @@ public:
     void render_player_board_status();
 
     // Selection screen
+    void update_selection_screen();
+    void render_selection_screen();
 
     // Update and render the game
     void update();

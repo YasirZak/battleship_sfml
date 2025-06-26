@@ -20,6 +20,11 @@ int main() {
 
         switch (game.state)
         {
+        case GameState::Select:
+            game.update_selection_screen();
+            game.render_selection_screen();
+            break;
+            
         case GameState::Preparation:
         case GameState::Shooting:
         case GameState::Win:

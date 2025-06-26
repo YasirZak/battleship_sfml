@@ -254,14 +254,10 @@ bool Grid::shoot(sf::Vector2f mouse_position_view) {
 
 std::pair<int,int> Grid::noob_opponent_shoot() {
 
-    x = rand() % 10;
-    y = rand() % 10;
+    x = (rand() % 10) + 1;
+    y = (rand() % 10) + 1;
 
-    if(!this->shoot(
-        this->grid.getPosition() + sf::Vector2f(
-            (11.0f * (x) + 1.0f + 5.0f) * global_scale, 
-            (11.0f * (y) + 1.0f + 5.0f) * global_scale
-        ))) 
+    if(!this->shoot(this->get_abs_pos(x,y))) 
             
     {
         return this->noob_opponent_shoot();
