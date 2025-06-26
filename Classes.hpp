@@ -11,6 +11,7 @@
 const float global_scale = 3.0f;
 
 enum class GameState{
+    Select,
     Preparation,
     Shooting,
     Win,
@@ -52,6 +53,13 @@ private:
     sf::Texture submarine_texture;
     sf::Texture destroyer_texture;
 
+    // Initializations
+    void init_variables();
+    void init_pegs();
+    void init_ships();
+
+public:
+
     // Grid logic
     std::vector<std::vector<int>> peg_check;
     int carrier_life;
@@ -60,12 +68,6 @@ private:
     int submarine_life;
     int destroyer_life;
 
-    // Initializations
-    void init_variables();
-    void init_pegs();
-    void init_ships();
-
-public:
     // Constructors / Destructors
     Grid(float x, float y);
     // virtual ~Grid();
@@ -124,6 +126,28 @@ public:
 
     std::string status_text_gen(sf::Vector2f position);
 
+
+};
+
+class ProBot {
+
+private:
+
+    std::vector<std::vector<float>> grid_prob;
+
+public:
+
+    // Vector functions
+    bool contains_elements(std::vector<int> vec, int element);
+    void add_vectors(std::vector<std::vector<float>>& a, std::vector<std::vector<float>> b);
+    std::pair<int,int> get_max_position(std::vector<std::vector<float>> prob);
+
+    // Bot functions
+    std::vector<std::vector<float>> possible_locations_prob(std::vector<std::vector<int>> peg_check, int size);
+    void set_probabilities_for_all_ships(std::vector<std::vector<int>> peg_check);
+    std::pair<int,int> get_next_move();
+    void print_prob();
+
 };
 
 class Game {
@@ -135,6 +159,7 @@ private:
     sf::RenderWindow* window;
     sf::VideoMode video_mode;
     sf::Event event;
+    bool is_pro;
 
     // Mouse position
     sf::Vector2i mouse_position_window;
@@ -179,6 +204,7 @@ public:
     // Game state variable
     GameState state;
     bool player_turn;
+    ProBot pro;
 
     // Constructor / Destructor
     Game();
@@ -202,6 +228,8 @@ public:
 
     void render_opponent_board_status();
     void render_player_board_status();
+
+    // Selection screen
 
     // Update and render the game
     void update();

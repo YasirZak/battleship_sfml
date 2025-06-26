@@ -30,6 +30,7 @@ void Game::init_variables() {
     this->window = nullptr;
     this->state = GameState::Preparation;
     this->player_turn = true;
+    this->is_pro = true;
 }
 
 void Game::init_window() {
@@ -312,7 +313,14 @@ void Game::update_player_board_status(std::string status_string) {
 
     this->player_board_status.setString(status_string);
 
-    if(status_string[8] == 'H' || status_string[8] == 'S') 
+    int i;
+    if(status_string[2] == '1' && status_string[3] == '0') {
+        i = 1;
+    } else {
+        i = 0;
+    }
+
+    if(status_string[8+i] == 'H' || status_string[8+i] == 'S')
         this->player_board_status.setFillColor(sf::Color::Red);
     else
         this->player_board_status.setFillColor(sf::Color::White);
@@ -332,7 +340,14 @@ void Game::update_opponent_board_status(std::string status_string) {
 
     this->opponent_board_status.setString(status_string);
 
-    if(status_string[8] == 'H' || status_string[8] == 'S') 
+    int i;
+    if(status_string[2] == '1' && status_string[3] == '0') {
+        i = 1;
+    } else {
+        i = 0;
+    }
+
+    if(status_string[8+i] == 'H' || status_string[8+i] == 'S') 
         this->opponent_board_status.setFillColor(sf::Color::Red);
     else
         this->opponent_board_status.setFillColor(sf::Color::White);
@@ -352,6 +367,10 @@ void Game::render_player_board_status() {
     }
 }
 
+// Selection screen
+
+
+
 // Update and Render
 
 void Game::update() {
@@ -369,7 +388,17 @@ void Game::update() {
 
     if(this->state == GameState::Shooting) {
         if(!this->player_turn) {
-            std::pair<int,int> pos = this->player_grid.noob_opponent_shoot();
+            std::pair<int,int> pos;
+
+            if(!this->is_pro) {
+                pos = this->player_grid.noob_opponent_shoot();
+                
+            } else {
+                this->pro.set_probabilities_for_all_ships(this->player_grid.peg_check);
+                pos = this->pro.get_next_move();
+                this->player_grid.shoot(this->player_grid.get_abs_pos(pos.first,pos.second));
+            }
+
             this->update_player_board_status(
                 this->player_grid.status_text_gen(this->player_grid.get_abs_pos(pos.first, pos.second))
             );

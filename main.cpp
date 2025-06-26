@@ -2,7 +2,7 @@
 
 /*
     To compile:
-    g++ main.cpp Game.cpp Grid.cpp -o Game_ex -lsfml-graphics -lsfml-window -lsfml-system
+    g++ main.cpp Game.cpp Grid.cpp ProBot.cpp -o Game_ex -lsfml-graphics -lsfml-window -lsfml-system
 
 */
 

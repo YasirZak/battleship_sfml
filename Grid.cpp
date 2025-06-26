@@ -52,7 +52,8 @@ void Grid::init_pegs() {
    this->red_peg.setScale(global_scale,global_scale);
 
    // Initializing peg checker grid
-   peg_check.assign(10, std::vector<int>(10, 0));
+   this->peg_check.assign(10, std::vector<int>(10, 0));
+
 }
 
 void Grid::init_ships() {
@@ -612,8 +613,8 @@ std::pair<int,int> Grid::get_rel_pos(sf::Vector2f position) {
 
 sf::Vector2f Grid::get_abs_pos(int x, int y) {
     return this->grid.getPosition() + sf::Vector2f(
-            (11.0f * (x) + 1.0f + 5.0f) * global_scale, 
-            (11.0f * (y) + 1.0f + 5.0f) * global_scale
+            (11.0f * (x-1) + 1.0f + 5.0f) * global_scale, 
+            (11.0f * (y-1) + 1.0f + 5.0f) * global_scale
         );
 }
 
