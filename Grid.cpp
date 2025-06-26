@@ -333,7 +333,7 @@ void Grid::place_carrier(int x, int y) {
         return;
     }
 
-    std::cout << "carrier placed position: " << x << "," << y << "\n";
+    // std::cout << "carrier placed position: " << x << "," << y << "\n";
 
     this->ships.push_back(this->carrier);
 }
@@ -366,7 +366,7 @@ void Grid::place_battleship(int x, int y) {
         return;
     }
 
-    std::cout << "battleship placed position: " << x << "," << y << "\n";
+    // std::cout << "battleship placed position: " << x << "," << y << "\n";
 
     this->ships.push_back(this->battleship);
 }
@@ -399,7 +399,7 @@ void Grid::place_cruiser(int x, int y) {
         return;
     }
 
-    std::cout << "cruiser placed position: " << x << "," << y << "\n";
+    // std::cout << "cruiser placed position: " << x << "," << y << "\n";
 
     this->ships.push_back(this->cruiser);
 }
@@ -432,7 +432,7 @@ void Grid::place_submarine(int x, int y) {
         return;
     }
 
-    std::cout << "submarine placed position: " << x << "," << y << "\n";
+    // std::cout << "submarine placed position: " << x << "," << y << "\n";
 
     this->ships.push_back(this->submarine);
 }
@@ -465,7 +465,7 @@ void Grid::place_destroyer(int x, int y) {
         return;
     }
 
-    std::cout << "destroyer placed position: " << x << "," << y << "\n";
+    // std::cout << "destroyer placed position: " << x << "," << y << "\n";
 
     this->ships.push_back(this->destroyer);
 }

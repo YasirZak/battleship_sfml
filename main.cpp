@@ -4,6 +4,8 @@
     To compile:
     g++ main.cpp Game.cpp Grid.cpp ProBot.cpp -o Game_ex -lsfml-graphics -lsfml-window -lsfml-system
 
+    g++ main.cpp Game-font.cpp Grid-img.cpp ProBot.cpp -o battleship -lsfml-graphics -lsfml-window -lsfml-system
+
 */
 
 int main() {
