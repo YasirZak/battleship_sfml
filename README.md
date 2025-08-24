@@ -2,9 +2,11 @@
  
 ## How to play
 
-donload the [battleship executable](battleship) file and run it.
+currently only works for linux.
 
-(for linux) if permission denied then go to the terminal
+download the [battleship executable](battleship) file and run it.
+
+if permission denied then go to the terminal
 
 ```bash
 chmod +x battleship
